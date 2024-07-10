@@ -7,18 +7,23 @@ pipeline {
 
         stages('Build docker image') {
             steps {
-                sh 'docker build -t akashnair30/todoapp:BUILD_NUMBER .'
+                sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
             }
         }
         stage('login to dockerhub') {
             steps{
                 sh 'echo $DOCKERHUB_CREDENTIALS-PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'     
-                 }
+            }
         }
         stage('push image') {
             steps{
-                sh 'docker push akashnair30/todoapp:$BUILD_NUMBER'
+                sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
             }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
