@@ -28,46 +28,46 @@
 //     }
 // }
 
-pipeline {
-    agent any
+// pipeline {
+//     agent any
 
-    environment {
-        DOCKER_BUILDKIT = "1"
-    }
+//     environment {
+//         DOCKER_BUILDKIT = "1"
+//     }
 
-    stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Build docker image') {
-            steps {
-                script {
-                    sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
-                }
-            }
-        }
-        stage('Login to DockerHub') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    }
-                }
-            }
-        }
-        stage('Push image') {
-            steps {
-                script {
-                    sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+//     stages {
+//         stage('Checkout SCM') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+//         stage('Build docker image') {
+//             steps {
+//                 script {
+//                     sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
+//                 }
+//             }
+//         }
+//         stage('Login to DockerHub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Push image') {
+//             steps {
+//                 script {
+//                     sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
+//                 }
+//             }
+//         }
+//     }
+//     post {
+//         always {
+//             cleanWs()
+//         }
+//     }
+// }
