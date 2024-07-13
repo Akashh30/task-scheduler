@@ -28,50 +28,6 @@
 //     }
 // }
 
-// pipeline {
-//     agent any
-
-//     environment {
-//         DOCKER_BUILDKIT = "1"
-//     }
-
-//     stages {
-//         stage('Checkout SCM') {
-//             steps {
-//                 checkout scm
-//             }
-//         }
-//         stage('Build docker image') {
-//             steps {
-//                 script {
-//                     sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
-//                 }
-//             }
-//         }
-//         stage('Login to DockerHub') {
-//             steps {
-//                 script {
-//                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-//                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-//                     }
-//                 }
-//             }
-//         }
-//         stage('Push image') {
-//             steps {
-//                 script {
-//                     sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
-//                 }
-//             }
-//         }
-//     }
-//     post {
-//         always {
-//             cleanWs()
-//         }
-//     }
-// }
-
 pipeline {
     agent any
 
@@ -85,20 +41,10 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Set up Docker Buildx') {
-            steps {
-                script {
-                    // Create and use the Buildx builder
-                    sh 'docker buildx create --name mybuilder --use'
-                    sh 'docker buildx inspect --bootstrap'
-                }
-            }
-        }
         stage('Build docker image') {
             steps {
                 script {
-                    // Use Buildx to build the image with plain progress output
-                    sh 'docker buildx build --progress=plain --platform linux/amd64 -t akashnair30/todoapps:$BUILD_NUMBER .'
+                    sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
                 }
             }
         }
@@ -106,7 +52,6 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        // Login to DockerHub
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     }
                 }
@@ -115,8 +60,7 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    // Use Buildx to push the image
-                    sh 'docker buildx build --progress=plain --platform linux/amd64 -t akashnair30/todoapps:$BUILD_NUMBER --push .'
+                    sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
                 }
             }
         }
@@ -127,3 +71,59 @@ pipeline {
         }
     }
 }
+
+// pipeline {
+//     agent any
+
+//     environment {
+//         DOCKER_BUILDKIT = "1"
+//     }
+
+//     stages {
+//         stage('Checkout SCM') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+//         stage('Set up Docker Buildx') {
+//             steps {
+//                 script {
+//                     // Create and use the Buildx builder
+//                     sh 'docker buildx create --name mybuilder --use'
+//                     sh 'docker buildx inspect --bootstrap'
+//                 }
+//             }
+//         }
+//         stage('Build docker image') {
+//             steps {
+//                 script {
+//                     // Use Buildx to build the image with plain progress output
+//                     sh 'docker buildx build --progress=plain --platform linux/amd64 -t akashnair30/todoapps:$BUILD_NUMBER .'
+//                 }
+//             }
+//         }
+//         stage('Login to DockerHub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                         // Login to DockerHub
+//                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Push image') {
+//             steps {
+//                 script {
+//                     // Use Buildx to push the image
+//                     sh 'docker buildx build --progress=plain --platform linux/amd64 -t akashnair30/todoapps:$BUILD_NUMBER --push .'
+//                 }
+//             }
+//         }
+//     }
+//     post {
+//         always {
+//             cleanWs()
+//         }
+//     }
+// }
