@@ -128,7 +128,6 @@
 //     }
 // }
 
-
 pipeline {
     agent any
     stages {
@@ -136,8 +135,7 @@ pipeline {
             steps {
                 script {
                     echo "Start Checkout SCM: ${new Date()}"
-                    // Use 'git' command to checkout SCM
-                    git 'https://github.com/Akashh30/task-scheduler.git'
+                    // No need to specify git command here
                 }
             }
         }
