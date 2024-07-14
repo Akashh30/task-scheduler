@@ -28,49 +28,49 @@
 //     }
 // }
 
-pipeline {
-    agent any
+// pipeline {
+//     agent any
 
-    environment {
-        DOCKER_BUILDKIT = "1"
-    }
+//     environment {
+//         DOCKER_BUILDKIT = "1"
+//     }
 
-    stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Build docker image') {
-            steps {
-                script {
-                    sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
-                }
-            }
-        }
-        stage('Login to DockerHub') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    }
-                }
-            }
-        }
-        stage('Push image') {
-            steps {
-                script {
-                    sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+//     stages {
+//         stage('Checkout SCM') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+//         stage('Build docker image') {
+//             steps {
+//                 script {
+//                     sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
+//                 }
+//             }
+//         }
+//         stage('Login to DockerHub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Push image') {
+//             steps {
+//                 script {
+//                     sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
+//                 }
+//             }
+//         }
+//     }
+//     post {
+//         always {
+//             cleanWs()
+//         }
+//     }
+// }
 
 // pipeline {
 //     agent any
@@ -127,3 +127,58 @@ pipeline {
 //         }
 //     }
 // }
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_BUILDKIT = "1"
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                script {
+                    echo "Start Checkout SCM: $(date)"
+                    checkout scm
+                    echo "End Checkout SCM: $(date)"
+                }
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                script {
+                    echo "Start Build docker image: $(date)"
+                    sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
+                    echo "End Build docker image: $(date)"
+                }
+            }
+        }
+        stage('Login to DockerHub') {
+            steps {
+                script {
+                    echo "Start Login to DockerHub: $(date)"
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                    }
+                    echo "End Login to DockerHub: $(date)"
+                }
+            }
+        }
+        stage('Push image') {
+            steps {
+                script {
+                    echo "Start Push image: $(date)"
+                    sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
+                    echo "End Push image: $(date)"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
