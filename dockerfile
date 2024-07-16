@@ -13,12 +13,12 @@
 # CMD ["npm", "start"]
 
 # Stage 1: Build the application
-FROM node:21-alpine AS build
+FROM node:latest AS build
 WORKDIR /usr/src/app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm installdoc
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -27,7 +27,7 @@ COPY . .
 # RUN npm run build
 
 # Stage 2: Create the production image
-FROM node:21-alpine
+FROM node:latest
 WORKDIR /usr/src/app
 
 # Copy only the necessary files from the build stage
