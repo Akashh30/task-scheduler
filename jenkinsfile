@@ -143,7 +143,7 @@ pipeline {
             steps {
                 script {
                     retry(3) {
-                        sh 'docker build -t akashnair30/todoapps:$BUILD_NUMBER .'
+                        sh 'docker build -t akashnair30/taskscheduler:$BUILD_NUMBER .'
                     }
                 }
             }
@@ -163,7 +163,7 @@ pipeline {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                sh 'docker push akashnair30/todoapps:$BUILD_NUMBER'
+                sh 'docker push akashnair30/taskscheduler:$BUILD_NUMBER'
             }
         }
     }
